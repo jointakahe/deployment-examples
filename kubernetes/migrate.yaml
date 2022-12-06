@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+spec:
+  ttlSecondsAfterFinished: 120
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: webserver
+          image: jointakahe/takahe:0.5
+          args: ["python3", "manage.py", "migrate"]
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: takahe-config
+            - secretRef:
+                name: takahe-secrets
+          resources:
+            requests:
+              memory: "1024Mi"
+            limits:
+              memory: "1024Mi"
