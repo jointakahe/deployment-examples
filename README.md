@@ -10,3 +10,8 @@ Kubernetes
 ----------
 
 See more in the [kubernetes/ directory](kubernetes/)
+
+Webserver
+---------
+
+The [webserver / directory](webserver/) provides examples for e.g. nginx configuration
