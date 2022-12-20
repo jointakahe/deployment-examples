@@ -10,3 +10,8 @@ Kubernetes
 ----------
 
 See more in the [kubernetes/ directory](kubernetes/)
+
+Takahē on Fly.io
+----------------
+
+See the [tutorial](fly.io/README.md) and the example [config file](fly.io/fly.toml) in [fly.io/](fly.io/).
