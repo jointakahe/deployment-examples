@@ -1,0 +1,40 @@
+app = "<YOUR APP NAME>"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[build]
+  image = "jointakahe/takahe-dev:edge"
+
+[env]
+  # TAKAHE_ENVIRONMENT = "development"
+  TAKAHE_MAIN_DOMAIN = "<YOUR APP DOMAIN>"
+  TAKAHE_EMAIL_FROM = "<YOUR APP EMAIL>"
+  TAKAHE_USE_PROXY_HEADERS = true
+  GUNICORN_CMD_ARGS = "--workers 2"
+
+[processes]
+  web = "bash /takahe/docker/run.sh"
+  stator = "/takahe/manage.py runstator"
+
+[deploy]
+  release_command = "/takahe/manage.py migrate"
+
+[[services]]
+  processes = ["web"]
+  internal_port = 8000
+  protocol = "tcp"
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+    force_https = true
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
