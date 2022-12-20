@@ -5,6 +5,8 @@ It's intentionally a very basic setup both in terms of the Fly.io configuration 
 
 As far as I understand Fly.io pricing, the minimal version of this should even run within the free tier.
 
+The following assumes a working Fly.io account, the installed Fly commandline tool, [`flyctl`](https://fly.io/docs/flyctl/), and a previous authentication via `flyctl auth`.
+
 ## Fly.io app name
 
 Let's set up a name for the Fly.io app:
@@ -32,6 +34,7 @@ Now, we can attach the Postgres instance to the app and set the correct environm
 ## Setup secrets
 
 Next, we need to generate a `SECRET_KEY` for Takahē and want to set up a few encrypted environment variables for our Takahē installation. (See [Media Configuration](https://docs.jointakahe.org/en/latest/installation/#media-configuration) and [Email Configuration](https://docs.jointakahe.org/en/latest/installation/#email-configuration).)
+There's no need to set `TAKAHE_DATABASE_SERVER` as that is already done by Fly in the database attachment step above.
 
     flyctl secrets set -a $APP_NAME TAKAHE_SECRET_KEY=<SECRET KEY>
     flyctl secrets set -a $APP_NAME TAKAHE_MEDIA_BACKEND=s3://access-key:secret-key@endpoint-url/bucket-name
@@ -59,3 +62,5 @@ To log into Takahē, first create a admin user by logging into the Fly.io instan
 ## Login, Takahē setup
 
 Now, go to \<YOUR APP DOMAIN> to login and complete the setup of the Takahē instance.
+
+    flyctl open
