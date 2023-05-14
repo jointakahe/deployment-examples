@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+
+  db:
+    image: docker.io/postgres:15-alpine
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_DB: takahe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: change_me_to_an_actual_password
+    ports:
+      - "5433:5432"
+
+  web:
+    image: jointakahe/takahe:latest
+    environment:
+      TAKAHE_DATABASE_SERVER: "postgres://postgres:change_me_to_an_actual_password@db/takahe"
+      TAKAHE_SECRET_KEY: "a_random_secret"
+      TAKAHE_EMAIL_SERVER: ""
+      TAKAHE_EMAIL_FROM: "postmaster@your.domain.com"
+      TAKAHE_AUTO_ADMIN_EMAIL: "youremail@domain.com"
+      TAKAHE_MEDIA_BACKEND: "local://"
+      TAKAHE_MAIN_DOMAIN: ""
+      TAKAHE_STATOR_TOKEN: "another_random_secret"
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - web_data:/takahe/
+      - media_data:/takahe_media/
+    healthcheck:
+      test: ["CMD", "nc", "-z", "-v", "localhost", "8000"]
+      interval: 20s
+      timeout: 60s
+      start_period: 15s
+    ports:
+      - "8000:8000"
+
+  stator:
+    image: jointakahe/takahe:latest
+    environment:
+      TAKAHE_DATABASE_SERVER: "postgres://postgres:change_me_to_an_actual_password@db/takahe"
+      TAKAHE_SECRET_KEY: "a_random_secret"
+      TAKAHE_EMAIL_SERVER: ""
+      TAKAHE_EMAIL_FROM: "postmaster@your.domain.com"
+      TAKAHE_AUTO_ADMIN_EMAIL: "youremail@domain.com"
+      TAKAHE_MEDIA_BACKEND: "local://"
+      TAKAHE_MAIN_DOMAIN: ""
+      TAKAHE_STATOR_TOKEN: "another_random_secret"
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - web_data:/takahe/
+      - media_data:/takahe_media/
+    command: ["/takahe/manage.py", "runstator"]
+
+networks:
+  default:
+
+volumes:
+  db_data:
+  web_data:
+  media_data:
