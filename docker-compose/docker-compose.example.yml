@@ -31,7 +31,6 @@ services:
     depends_on:
       - db
     volumes:
-      - web_data:/takahe/
       - media_data:/takahe_media/
     healthcheck:
       test: ["CMD", "nc", "-z", "-v", "localhost", "8000"]
@@ -56,7 +55,6 @@ services:
     depends_on:
       - db
     volumes:
-      - web_data:/takahe/
       - media_data:/takahe_media/
     command: ["/takahe/manage.py", "runstator"]
 
@@ -65,5 +63,4 @@ networks:
 
 volumes:
   db_data:
-  web_data:
   media_data:
